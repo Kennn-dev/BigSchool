@@ -33,8 +33,10 @@ namespace BigSchool.Controllers
             return View(viewModel);
         }
 
+        // POST : Courses
         [Authorize]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult Create( CourseViewModel viewModel)
         {
             //var viewModel = new CourseViewModel
