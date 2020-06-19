@@ -25,14 +25,47 @@
                 <div class="details">
                     <span class="lecturer">
                         @course.Lecturer.Name
+                        <button 
+                                class="btn btn-default btn-sm js-toggle-attendance"
+                                data-user-id="@course.LecturerId"
+                        >
+                            Follow
+                        </button>
                     </span>
                     <span class="category">
                         @course.Category.Name
                     </span>
+                    <button data-course-id="@course.Id" class="btn btn-default btn-sm js-toggle-attendance">Going ?</button>
                 </div>
             </li>
         }
     </ul>
+    @section scripts
+    {
+        <script>
+            $(document).ready(function () {
+                $(".js-toggle-attendance").click(function (e) {
+                    var button = $(e.target);
+                    $.post("/api/attendances", { courseId: button.attr("data-course-id") })
+                    .done(function () {
+                        button
+                        .removeClass("btn-default")
+                        .addClass("btn-info")
+                        .text("Going")
+                    })
+                    .fail(function () {
+                        alert("Something failed !");
+                    });
+                });
+                $(".js-toggle-follow").click(e => {
+                    var button = $(e.target);
+                    $.post("/api/followings", { followeeId: button.attr("data-user-id") })
+                        .done(() => button.text("Following"))
+                        .fail(() => alert("Something failed"))
+                })
+            });
+        </script>
+    }
     <div class="col-md-4">
         <h2>Getting started</h2>
         <p>

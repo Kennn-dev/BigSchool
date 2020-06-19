@@ -4,24 +4,21 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace BigSchool.Models
 {
-    public class Attendance 
+    public class Following
     {
-        // GET: Attendance
-        public Course Course { get; set; }
-
         [Key]
         [Column(Order = 1)]
-        public int CourseId { get; set; }
-
-        public ApplicationUser Attendee { get; set; }
+        public string FollowerId { get; set; }
 
         [Key]
         [Column(Order = 2)]
-        public string AttendeeId { get; set; }
+        public string FolloweeId { get; set; }
+
+        public ApplicationUser Follower { get; set; }
+        public ApplicationUser Followee { get; set; }
+
     }
 }
