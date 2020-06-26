@@ -1,0 +1,162 @@
+﻿@model  IEnumerable<lab.Models.Course>
+
+@{
+    ViewBag.Title = "MineCourse";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link href="~/Content/jquery-confirm.min.css" rel="stylesheet" />
+
+<style>
+    .date {
+        text-align: center;
+        background-color: #1d908e;
+        color: white;
+        width: 60px;
+        border-radius: 8px;
+    }
+</style>
+<h2>Mine Course</h2>
+<table class="table ">
+    <tr >
+        
+        <th>Thời gian</th>
+        <th>Tên</th>
+        <th>Địa chỉ</th>
+        <th>Danh mục</th>
+        <th>Danh Sách AT</th>
+        <th>Sửa</th>
+        <th>Hiển thị</th>
+        <th>Xóa</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+<tr>
+    <td>
+        <div class="date">
+            <div class="month">@item.DateTime.ToString("MM")</div>
+            <div class="day">@item.DateTime.ToString("dd") </div>
+        </div>
+    </td>
+    <td>
+        @item.Lecture.name
+    </td>
+    <td>
+        @item.Place
+    </td>
+    <td>
+        @item.Category.Name
+    </td>
+    <td > <a class="btn btn-info btn-block" href="/Course/GoingMe/@item.Id"> Danh sách học viên </a> </td>
+    <td>
+        <a href="/Course/EditCourse/@item.Id" class="btn btn-info">Edit</a>
+    </td>
+
+    <td>
+        @if (item.IsCanceled)
+        {
+            <button class="btn btn-info btn-block Displaycourse fo" data-course-id="@item.Id">Display</button>
+
+        }
+        else
+        {
+            <button class="btn btn-danger btn-block hiddencourse" data-course-id="@item.Id">Hidden</button>
+        }
+    </td>
+    <td>
+        <button class="btn btn-danger btn-block deletecourse" data-course-id="@item.Id">Xóa</button>
+    </td>
+</tr>
+    }
+
+</table>
+@section scripts{
+    <script src="~/Scripts/jquery.confirm.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(() => {
+            $(".hiddencourse").click((e) => {
+                e.preventDefault();
+                var link = $(e.target);
+                $.confirm({
+                    title: 'Xác nhận',
+                    content: 'Ẩn Khóa học',
+                    buttons: {
+                        OK: function () {
+                            $.ajax({
+                                url: "/api/Courses/" + link.attr("data-course-id"),
+                                method: "DELETE",
+                            }).done(() => {
+                                link
+                                    .removeClass('btn-danger')
+                                    .addClass('btn-info')
+                                    .text("Display");
+                                location.reload();
+                            }).fail(() => {
+                                alert('Something fail')
+                            })
+
+                        },
+                        Hủy: function () {
+                            return
+                        }
+                    }
+                });
+            })
+            $(".Displaycourse").click((e) => {
+                e.preventDefault();
+                var link = $(e.target);
+                $.confirm({
+                    title: 'Xác nhận',
+                    content: 'Hiển thị Khóa học',
+                    buttons: {
+                        OK: function () {
+                            $.ajax({
+                                url: "/api/DisplayCourse/" + link.attr("data-course-id"),
+                                method: "POST",
+                            }).done(() => {
+                                link
+                                    .removeClass('btn-info')
+                                    .addClass('btn-danger')
+                                    .text("Hidden");
+                                location.reload();
+                            }).fail(() => {
+                                alert('Something fail')
+                            })
+
+                        },
+                        Hủy: function () {
+                            return
+                        }
+                    }
+                });
+            })
+
+            $('.deletecourse').click((e) => {
+                e.preventDefault();
+                var link = $(e.target);
+                $.confirm({
+                    title: 'Xác nhận',
+                    content: 'Xóa khóa học',
+                    buttons: {
+                        OK: function () {
+                            $.ajax({
+                                url: "/api/DeleteCourse/" + link.attr("data-course-id"),
+                                method: "DELETE",
+                            }).done(() => {
+                                
+                                location.reload();
+                            }).fail(() => {
+                                alert('Something fail')
+                            })
+
+                        },
+                        Hủy: function () {
+                            return
+                        }
+                    }
+                });
+            })
+        })
+    </script>
+
+}

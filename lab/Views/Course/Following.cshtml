@@ -1,0 +1,44 @@
+﻿@model IEnumerable<lab.Models.ApplicationUser>
+
+@{
+    ViewBag.Title = "Following";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Following</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.name)
+        </th>
+        <th>
+            Chi tiết
+        </th>
+
+
+
+    </tr>
+
+@foreach (var item in Model) {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Email)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.name)
+    </td>
+    <td>
+        <a href="/Course/DetailLecture/@Html.DisplayFor(modelItem => item.Id)" class="btn btn-info">Chi Tiết</a> 
+    </td>
+
+</tr>
+}
+
+</table>

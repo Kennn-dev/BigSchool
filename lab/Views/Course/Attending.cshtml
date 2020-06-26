@@ -1,0 +1,132 @@
+﻿@model lab.ViewModel.CoursesViewMode
+@using Microsoft.AspNet.Identity
+@{
+    ViewBag.Title = "Attending";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .date {
+                text-align: center;
+                background-color: #d41d50;
+                color: white;
+                width: 60px;
+                border-radius: 8px;
+            }
+
+          
+</style>
+<h2>Attending</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            Thời gian
+        </th>
+        <th>
+            Tên
+        </th>
+        <th>
+            Danh mục
+        </th>
+        <th>
+            Địa Điểm
+        </th>
+        <th>
+            Going
+        </th>
+   
+
+    </tr>
+
+    @foreach (var item in Model.UpcommingCourses)
+    {
+        <tr>
+            <td>
+                <div class="date">
+                    <div class="month">@item.DateTime.ToString("MM")</div>
+                    <div class="day">@item.DateTime.ToString("dd") </div>
+                </div>
+            </td>
+            <td>
+                @item.Lecture.name
+            </td>
+            <td>
+                @item.Category.Name
+            </td>
+            <td>
+                @item.Place
+            </td>
+
+            <td>
+               
+                 @if (Model.GetAttendances != null && Model.GetAttendances.Any(p => p.CourseId == item.Id && p.AttendeeId == User.Identity.GetUserId()) == true)
+                {
+                    <button data-course-id="@item.Id" class="btn btn-info btn-sm js-attendance"> UnGoing</button>
+                }
+                else
+                {
+                    <button data-course-id="@item.Id" class="btn btn-default btn-sm js-toggle-attendance"> Going?</button>
+                }
+
+            </td>
+            
+
+        </tr>
+    }
+
+</table>
+@section scripts{
+    <script src="~/Scripts/jquery.confirm.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(() => {
+            //going
+            $('.js-toggle-attendance').click((e) => {
+               
+                var button = $(e.target);
+                var base_url = location.protocol + "//" + document.domain + ":" + location.port;
+                $.post('/api/Attendance', { courseId: button.attr("data-course-id") })
+                    .done(() => {
+                        button
+                            .removeClass('btn-default js-toggle-attendance')
+                            .addClass('btn-info btn-sm js-attendance')
+                            .text("UnGoing");
+                        location.reload();
+                    })
+                    .fail(() => {
+                        alert("something false");
+                    })
+            })
+            //ungoing
+            $('.js-attendance').click((e) => {
+                var button = $(e.target);
+                $.confirm({
+                    title: 'Xác nhận',
+                    content: 'Bỏ theo dõi',
+                    buttons: {
+                        OK: function () {
+                            $.ajax({
+                                url: "/api/AttendanceGoing/" + button.attr("data-course-id"),
+                                method: "DELETE",
+
+                            }).done(() => {
+                                button
+                                    .removeClass('btn-info js-attendance ')
+                                    .addClass('btn-default js-toggle-attendance')
+                                    .text("Going?");
+                                location.reload();
+                            }).fail(() => {
+                                alert('Something fail')
+                            })
+
+                        },
+                        Hủy: function () {
+                            return
+                        }
+                    }
+                });
+            })
+           
+        })
+    </script>
+
+}

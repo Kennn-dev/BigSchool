@@ -1,0 +1,36 @@
+﻿@model List<lab.Models.ApplicationUser>
+@{
+    ViewBag.Title = "GoingMe";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>GoingMe</h2>
+
+<table class="table">
+<tr>
+    <th>
+        Tên
+    </th>
+    <th>
+        Email
+    >
+
+
+
+</tr>
+
+@foreach (var item in Model)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Email)
+        </td>
+        <td></td>
+
+    </tr>
+}
+</table>
+
